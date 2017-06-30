@@ -66,6 +66,7 @@ file_struct* get_file(char* filename) {
 
 int set_struct_file_type(file_struct* file_info, struct stat* file_stat) {
     printf("%d\n", file_stat->st_mode);
+    file_info->file_mode = file_stat->st_mode;
     switch (file_stat->st_mode) {
         case S_IFMT:
         case S_IFBLK:

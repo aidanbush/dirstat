@@ -5,7 +5,8 @@
 #include "file_info.h"
 
 int main(int argc, char const *argv[]) {
-    char* filename = "/home/aidan/Documents/360/hash.c";
+    char* filename = malloc(sizeof(char) * 250);// = "/home/aidan/Documents/360/";
+    scanf("%s", filename);
     file_struct* file_s = get_file(filename);
 
     if (file_s == NULL) {

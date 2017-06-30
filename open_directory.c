@@ -7,5 +7,5 @@
 #include add_file.h
 
 void open_dir(char *){
-    //
+    //get files
 }

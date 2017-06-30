@@ -23,6 +23,7 @@ typedef enum {
 typedef struct file_struct {
     off_t size;
     file_type type;
+    int file_mode;
     int num_files;
     char* name;
     struct file_struct* files;
