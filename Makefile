@@ -10,11 +10,11 @@ CFLAGS= -Wall -std=c99 -D_POSIX_C_SOURCE=200809L -D_BSD_SOURCE -g
 
 .PHONEY: all clean
 
-all: file_e
+all: file_view
 
-file_e: file_e.c file_info.o
+file_view: file_view.c file_info.o
 
 file_info.o: file_info.c file_info.h
 
 clean:
-	$(RM) *.o file_e
+	$(RM) *.o file_view
