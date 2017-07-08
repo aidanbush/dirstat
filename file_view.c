@@ -3,6 +3,7 @@
 #include <sys/stat.h>
 
 #include "file_info.h"
+#include "open_directory.h"
 
 int main(int argc, char const *argv[]) {
     char* filename = malloc(sizeof(char) * 250);// = "/home/aidan/Documents/360/";
@@ -15,5 +16,6 @@ int main(int argc, char const *argv[]) {
     }
 
     debug_print_file_s(file_s);
+    open_dir(file_s);
     return 0;
 }

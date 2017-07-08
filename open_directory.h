@@ -3,7 +3,13 @@
  * File:
  * Description:
  */
-#ifndef OPEN_DIR
-#define OPEN_DIR
+#ifndef OPEN_DIR_H
+#define OPEN_DIR_H
+
+#include "file_info.h"
+
+void open_dir(file_struct*);
+
+//void print_dirent(struct dirent*);
 
 #endif
