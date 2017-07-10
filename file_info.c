@@ -13,7 +13,9 @@
 
 #include "file_info.h"
 
+//prototypes
 int set_struct_file_type();
+int resize_struct_files();
 
 file_struct* get_file(char* filename) {
     struct stat* file_stat = NULL;
@@ -111,4 +113,41 @@ void debug_print_file_s(file_struct* file_s) {
     }
     fprintf(stderr, "size: %d\n", (int) file_s->size);
     fprintf(stderr, "number of files: %d\n", file_s->num_files);
+}
+
+
+void add_file_list(file_struct* file, char * new_filename) {
+    fprintf(stderr, "add_file_list start\n");
+    //create struct
+    file_struct* new_file = get_file(new_filename);
+    if(new_file == NULL) {
+        return;
+    }
+    //check for space
+    if(file->num_files >= file->max_files) {
+        if(resize_struct_files(file) == 0) {
+            free(new_file);
+            return;
+        }
+    }
+    file->files[file->num_files] = new_file;//add struct
+    file->num_files += 1;//update num_files
+    return;//return
+}
+
+int resize_struct_files(file_struct* file) {
+    //create new array
+    file_struct** new_file_array = malloc(sizeof(file_struct*) * file->max_files * 2);
+    if(new_file_array == NULL) {
+        return 0;
+    }
+    //copy elements over
+    for(int i = 0; i < file->num_files; i++) {
+        new_file_array[i] = file->files[i];
+    }
+    //free old
+    free(file->files);
+    //set on struct
+    file->files = new_file_array;
+    return 1;
 }
