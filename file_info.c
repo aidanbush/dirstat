@@ -11,6 +11,8 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 
+#include <errno.h>
+
 #include "file_info.h"
 
 //prototypes
@@ -35,8 +37,11 @@ file_struct* get_file(char* filename) {
 
     stat_val = stat(filename, file_stat);
     fprintf(stderr, "stat_val %d\n", stat_val);
-
+    
     if (stat_val != 0) {
+        //print errno
+        fprintf(stderr, "errno: %d\n", errno);
+        perror("stat error:");
         free(file_stat);
         free(file_info);
         return NULL;
