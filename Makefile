@@ -6,7 +6,7 @@
 SHELL=/bin/bash
 
 CC=gcc
-CFLAGS= -Wall -std=c99 -D_POSIX_C_SOURCE=200809L -D_BSD_SOURCE -g
+CFLAGS= -Wall -std=c99 -D_POSIX_C_SOURCE=200809L -D_DEFAULT_SOURCE -g
 
 .PHONEY: all clean
 
