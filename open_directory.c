@@ -27,7 +27,7 @@ void open_dir(file_struct* file){
         filename = create_filename(file->name, file_dirent->d_name);
         //add filename to file struct
         fprintf(stderr, "filename:|%s|\n", filename);
-        add_file_list(file, file_dirent->d_name);
+        add_file_list(file, filename);
         print_dirent(file_dirent);
         free(filename);
         fprintf(stderr, "\n");
