@@ -17,5 +17,7 @@ int main(int argc, char const *argv[]) {
 
     debug_print_file_s(file_s);
     open_dir(file_s);
+    fprintf(stderr, "reprinting debug file struct\n");
+    debug_print_file_s(file_s);
     return 0;
 }

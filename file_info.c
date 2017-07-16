@@ -20,6 +20,7 @@ int set_struct_file_type();
 int resize_struct_files();
 
 file_struct* get_file(char* filename) {
+    fprintf(stderr, "get_file start\n");
     struct stat* file_stat = NULL;
     file_struct* file_info = NULL;
     int stat_val = 0;
@@ -65,6 +66,7 @@ file_struct* get_file(char* filename) {
     }
 
     file_info->num_files = 0;
+    file_info->max_files = 0;
     file_info->files = NULL;
     //add file
     return file_info;
@@ -126,11 +128,13 @@ void add_file_list(file_struct* file, char * new_filename) {
     //create struct
     file_struct* new_file = get_file(new_filename);
     if(new_file == NULL) {
+        fprintf(stderr, "error in allocating space for current file\n");
         return;
     }
     //check for space
     if(file->num_files >= file->max_files) {
         if(resize_struct_files(file) == 0) {
+            fprintf(stderr, "error in allocating space for files\n");
             free(new_file);
             return;
         }
@@ -141,8 +145,17 @@ void add_file_list(file_struct* file, char * new_filename) {
 }
 
 int resize_struct_files(file_struct* file) {
+    fprintf(stderr, "resize_struct_files start\n");
+    int new_size;
+
+    if(file->max_files == 0)
+        new_size = 1;
+    else
+        new_size = file->max_files * 2;
+    
     //create new array
-    file_struct** new_file_array = malloc(sizeof(file_struct*) * file->max_files * 2);
+    file_struct** new_file_array = malloc(sizeof(file_struct*) * new_size);
+
     if(new_file_array == NULL) {
         return 0;
     }
@@ -154,5 +167,6 @@ int resize_struct_files(file_struct* file) {
     free(file->files);
     //set on struct
     file->files = new_file_array;
+    file->max_files = new_size;
     return 1;
 }
