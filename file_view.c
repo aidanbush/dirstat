@@ -6,7 +6,7 @@
 #include "open_directory.h"
 
 int main(int argc, char const *argv[]) {
-    char* filename = malloc(sizeof(char) * 250);// = "/home/aidan/Documents/360/";
+    char* filename = malloc(sizeof(char) * 250);
     scanf("%s", filename);
     file_struct* file_s = get_file(filename);
 

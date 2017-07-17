@@ -20,7 +20,6 @@ int set_struct_file_type();
 int resize_struct_files();
 
 file_struct* get_file(char* filename) {
-    fprintf(stderr, "get_file start\n");
     struct stat* file_stat = NULL;
     file_struct* file_info = NULL;
     int stat_val = 0;
@@ -37,7 +36,6 @@ file_struct* get_file(char* filename) {
     }
 
     stat_val = stat(filename, file_stat);
-    fprintf(stderr, "stat_val %d\n", stat_val);
     
     if (stat_val != 0) {
         //print errno
@@ -74,26 +72,18 @@ file_struct* get_file(char* filename) {
 
 
 int set_struct_file_type(file_struct* file_info, struct stat* file_stat) {
-    printf("%d\n", file_stat->st_mode);
     file_info->file_mode = file_stat->st_mode;
-    switch (file_stat->st_mode) {
-        case S_IFMT:
-        case S_IFBLK:
-        case S_IFCHR:
-        case S_IFIFO:
-        case S_IFREG:
-            file_info->type = TYPE_FILE;
-            break;
-        case S_IFDIR:
-            file_info->type = TYPE_DIR;
-            break;
-        case S_IFLNK:
-            file_info->type = TYPE_LINK;
-            break;
-        default:
-            file_info->type = TYPE_UNKNOWN;
-            break;
+
+    if (S_ISREG(file_stat->st_mode)) {// reg file
+        file_info->type = TYPE_FILE;
+    } else if (S_ISDIR(file_stat->st_mode)) {// directory
+        file_info->type = TYPE_DIR;
+    } else if (S_ISLNK(file_stat->st_mode)) {// link
+        file_info->type = TYPE_LINK;
+    } else {// other
+        file_info->type = TYPE_UNKNOWN;
     }
+
     return 1;
 }
 
@@ -124,7 +114,6 @@ void debug_print_file_s(file_struct* file_s) {
 
 
 void add_file_list(file_struct* file, char * new_filename) {
-    fprintf(stderr, "add_file_list start\n");
     //create struct
     file_struct* new_file = get_file(new_filename);
     if(new_file == NULL) {
@@ -141,11 +130,11 @@ void add_file_list(file_struct* file, char * new_filename) {
     }
     file->files[file->num_files] = new_file;//add struct
     file->num_files += 1;//update num_files
+    debug_print_file_s(new_file);
     return;//return
 }
 
 int resize_struct_files(file_struct* file) {
-    fprintf(stderr, "resize_struct_files start\n");
     int new_size;
 
     if(file->max_files == 0)
