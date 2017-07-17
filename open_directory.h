@@ -8,7 +8,7 @@
 
 #include "file_info.h"
 
-void open_dir(file_struct*);
+int open_dir(file_struct*);
 
 //void print_dirent(struct dirent*);
 

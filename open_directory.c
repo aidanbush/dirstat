@@ -12,14 +12,14 @@
 void print_dirent();
 char* create_filename();
 
-void open_dir(file_struct* file){
+int open_dir(file_struct* file){
     DIR* dir_struct = NULL;
     struct dirent* file_dirent = NULL;
     char* filename = NULL;
 
     dir_struct = opendir(file->name);
     if (dir_struct == NULL) {
-        return;
+        return 0;
     }
 
     while((file_dirent = readdir(dir_struct)) != NULL){
@@ -29,13 +29,12 @@ void open_dir(file_struct* file){
         add_file_list(file, filename);
         //print_dirent(file_dirent);
         free(filename);
-        fprintf(stderr, "\n");
     }
     closedir(dir_struct);// check output
 
     //free structs
     free(file_dirent);
-    return;
+    return 1;
 }
 
 void print_dirent(struct dirent* file_dirent) {
