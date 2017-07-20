@@ -11,6 +11,7 @@
 
 void print_dirent();
 char* create_filename();
+int ignored_filename();
 
 int open_dir(file_struct* file){
     DIR* dir_struct = NULL;
@@ -23,6 +24,9 @@ int open_dir(file_struct* file){
     }
 
     while((file_dirent = readdir(dir_struct)) != NULL){
+        //if in list of ignored files
+        if (ignored_filename(file_dirent->d_name))
+            continue;
         //create proper filename
         filename = create_filename(file->name, file_dirent->d_name);
         //add filename to file struct
@@ -55,4 +59,10 @@ char* create_filename(char* name_start, char* name_end) {
     sprintf(filename, "%s/%s", name_start, name_end);
 
     return filename;
+}
+
+int ignored_filename(char* filename) {
+    if(strcmp(filename, ".") == 0 || strcmp(filename, "..") == 0)
+        return 1;
+    return 0;
 }
