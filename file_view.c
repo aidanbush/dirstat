@@ -4,10 +4,12 @@
 
 #include "file_info.h"
 #include "open_directory.h"
+#include "file_search.h"
 
 int main(int argc, char const *argv[]) {
     char* filename = malloc(sizeof(char) * 250);
     scanf("%s", filename);
+
     file_struct* file_s = get_file(filename);
 
     if (file_s == NULL) {
@@ -15,9 +17,15 @@ int main(int argc, char const *argv[]) {
         return 1;
     }
 
+    search(file_s);
+    debug_print_files(file_s);
+    delete_files(file_s);
+
+    /*
     debug_print_file_s(file_s);
     open_dir(file_s);
     fprintf(stderr, "reprinting debug file struct\n");
     debug_print_file_s(file_s);
+    */
     return 0;
 }

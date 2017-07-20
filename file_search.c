@@ -4,6 +4,8 @@
  * Description: deals with recursivly searching through filesystem
  */
 
+#include <stdio.h>
+
 #include "file_info.h"
 #include "open_directory.h"
 #include "file_search.h"
