@@ -20,3 +20,12 @@ void debug_print_files(file_struct* file) {
     for (int i = 0; i < file->num_files; i++)
         debug_print_files(file->files[i]);
 }
+
+void delete_files(file_struct* file) {
+    if (file->type == TYPE_DIR)
+        for (int i = 0; i < file->num_files; i++)
+            delete_files(file->files[i]);
+    free(file->files);
+    free(file->name);
+    free(file);
+}

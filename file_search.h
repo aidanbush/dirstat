@@ -7,8 +7,10 @@
 #ifndef FILE_SEARCH_H
 #define FILE_SEARCH_H
 
-void search(file_struct* file);
+void search(file_struct*);
 
-void debug_print_files(file_struct* file);
+void debug_print_files(file_struct*);
+
+void delete_files(file_struct*);
 
 #endif
