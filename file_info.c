@@ -19,7 +19,7 @@
 int set_struct_file_type();
 int resize_struct_files();
 
-file_struct* get_file(char* filename) {
+file_struct* get_file(char* filename, char* pathname) {
     struct stat* file_stat = NULL;
     file_struct* file_info = NULL;
     int stat_val = 0;
@@ -35,7 +35,7 @@ file_struct* get_file(char* filename) {
         return NULL;
     }
 
-    stat_val = stat(filename, file_stat);
+    stat_val = stat(pathname, file_stat);
     
     if (stat_val != 0) {
         //print errno
@@ -60,6 +60,15 @@ file_struct* get_file(char* filename) {
         free(file_stat);
         free(file_info);
         fprintf(stderr, "error in copying filename\n");
+        return NULL;
+    }
+    
+    file_info->path = strdup(pathname);
+    if (file_info->path == NULL) {
+        free(file_stat);
+        free(file_info->path);
+        free(file_info);
+        fprintf(stderr, "error in copying pathname\n");
         return NULL;
     }
 
@@ -113,9 +122,9 @@ void debug_print_file_s(file_struct* file_s) {
 }
 
 
-void add_file_list(file_struct* file, char * new_filename) {
+void add_file_list(file_struct* file, char* new_filename, char* new_pathname) {
     //create struct
-    file_struct* new_file = get_file(new_filename);
+    file_struct* new_file = get_file(new_filename, new_pathname);
     if(new_file == NULL) {
         fprintf(stderr, "error in allocating space for current file\n");
         return;
@@ -130,7 +139,7 @@ void add_file_list(file_struct* file, char * new_filename) {
     }
     file->files[file->num_files] = new_file;//add struct
     file->num_files += 1;//update num_files
-    debug_print_file_s(new_file);
+    //debug_print_file_s(new_file);
     return;//return
 }
 

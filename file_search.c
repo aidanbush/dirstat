@@ -1,5 +1,4 @@
-/* Author: Aidan
- * Date: July, 16, 17
+/*
  * File: File Search
  * Description: deals with recursivly searching through filesystem
  */
@@ -17,10 +16,14 @@ void search(file_struct* file) {
                 search(file->files[i]);
 }
 
-void debug_print_files(file_struct* file) {
+void debug_print_files(file_struct* file, int depth) {
+    for (int i = 0; i < depth -1; i++)
+        printf("|");
+    if (depth > 0)
+        printf("`");
     printf("%s\n", file->name);
     for (int i = 0; i < file->num_files; i++)
-        debug_print_files(file->files[i]);
+        debug_print_files(file->files[i], depth + 1);
 }
 
 void delete_files(file_struct* file) {
@@ -29,5 +32,12 @@ void delete_files(file_struct* file) {
             delete_files(file->files[i]);
     free(file->files);
     free(file->name);
+    free(file->path);
     free(file);
 }
+
+/*
+void generate_calculations() {
+    return;
+}
+*/

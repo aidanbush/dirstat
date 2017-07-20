@@ -8,9 +8,13 @@
 
 int main(int argc, char const *argv[]) {
     char* filename = malloc(sizeof(char) * 250);
+    char* path = malloc(sizeof(char) * 250);
+    printf("enter filename: ");
     scanf("%s", filename);
+    printf("enter pathname: ");
+    scanf("%s", path);
 
-    file_struct* file_s = get_file(filename);
+    file_struct* file_s = get_file(filename, path);
 
     if (file_s == NULL) {
         fprintf(stderr, "error in getting file info\n");
@@ -18,7 +22,7 @@ int main(int argc, char const *argv[]) {
     }
 
     search(file_s);
-    debug_print_files(file_s);
+    debug_print_files(file_s, 0);
     delete_files(file_s);
 
     /*

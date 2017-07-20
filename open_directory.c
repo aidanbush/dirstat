@@ -5,6 +5,7 @@
  */
 #include <dirent.h>
 #include <stdio.h>
+#include <string.h>
 
 #include "file_info.h"
 #include "open_directory.h"
@@ -18,7 +19,7 @@ int open_dir(file_struct* file){
     struct dirent* file_dirent = NULL;
     char* filename = NULL;
 
-    dir_struct = opendir(file->name);
+    dir_struct = opendir(file->path);
     if (dir_struct == NULL) {
         return 0;
     }
@@ -28,10 +29,9 @@ int open_dir(file_struct* file){
         if (ignored_filename(file_dirent->d_name))
             continue;
         //create proper filename
-        filename = create_filename(file->name, file_dirent->d_name);
+        filename = create_filename(file->path, file_dirent->d_name);
         //add filename to file struct
-        add_file_list(file, filename);
-        //print_dirent(file_dirent);
+        add_file_list(file, file_dirent->d_name, filename);
         free(filename);
     }
     closedir(dir_struct);// check output

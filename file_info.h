@@ -26,14 +26,15 @@ typedef struct file_struct {
     file_type type;
     int file_mode;
     char* name;
+    char* path;
     int num_files;
     int max_files;//the nume of allocated space in in the files array
     struct file_struct** files;
 } file_struct;
 
 //functions
-file_struct* get_file(char*);
+file_struct* get_file(char*, char*);
 void debug_print_file_s(file_struct*);
-void add_file_list(file_struct* file, char * new_filename);
+void add_file_list(file_struct*, char*, char*);
 
 #endif
