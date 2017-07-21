@@ -16,19 +16,27 @@ void search(file_struct* file) {
                 search(file->files[i]);
 }
 
-void debug_print_files(file_struct* file, int depth, int last) {
-    for (int i = 0; i < depth -1; i++)
-        printf("|  ");
-    if (depth != 0){
-        if (last)
-            printf("`--");
+void debug_print_files(file_struct* file, int depth, pre_string* str) {
+    //if depth >= str->len
+        //resize str->str
+    for (int i = 0; i < depth; i++)
+        printf("%s", str->str[i]);
+
+    if (depth > 0){
+        if (strcmp("`--", str->str[depth -1]) == 0)//check if last
+            strcpy(str->str[depth -1], "   ");
         else
-            printf("+--");
+            strcpy(str->str[depth -1], "|  ");
     }
+
     printf("%s\n", file->name);
-    for (int i = 0; i < file->num_files; i++)
-        debug_print_files(file->files[i], depth + 1,
-                          (i == file->num_files - 1)? 1 : 0);
+    for (int i = 0; i < file->num_files; i++){
+        if (i < file->num_files -1)
+            strcpy(str->str[depth], "+--");
+        else
+            strcpy(str->str[depth], "`--");
+        debug_print_files(file->files[i], depth + 1, str);
+    }
 }
 
 void delete_files(file_struct* file) {
@@ -41,6 +49,33 @@ void delete_files(file_struct* file) {
     free(file);
 }
 
+pre_string* create_pre_string(int len) {
+    pre_string* str = malloc(sizeof(pre_string*));
+    if (str == NULL) {      
+        fprintf(stderr, "str == NULL\n");     
+        return NULL;
+    }
+
+    str->str = malloc(sizeof(char*) * 10);
+    if (str->str == NULL) { 
+        fprintf(stderr, "str->str == NULL\n"); 
+        free(str);
+        return NULL;
+    }
+
+    for (int i = 0; i < len; i++) { 
+        str->str[i] = malloc(sizeof(char) * 3);
+        if (str->str[i] == NULL) {
+            for (int j = 0; j < i; j++)
+                free(str->str[i]);
+            free(str->str);
+            free(str);
+            return NULL;
+        }
+    }
+    str->len = len;
+    return str;
+}
 /*
 void generate_calculations() {
     return;

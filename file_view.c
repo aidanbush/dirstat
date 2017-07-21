@@ -18,6 +18,7 @@ int main(int argc, char **argv) {
 
     char* filename = malloc(sizeof(char) * 250);
     char* path = malloc(sizeof(char) * 250);
+
     printf("enter filename: ");
     scanf("%s", filename);
     printf("enter pathname: ");
@@ -30,8 +31,15 @@ int main(int argc, char **argv) {
         return 1;
     }
 
+    fprintf(stderr, "before create string\n");
+    pre_string* str;
+    str = create_pre_string(10);
+
+    fprintf(stderr, "before search\n");
     search(file_s);
-    debug_print_files(file_s, 0, 0);
+
+    fprintf(stderr, "before print tree\n");
+    debug_print_files(file_s, 0, str);
     delete_files(file_s);
     return 0;
 }
