@@ -16,14 +16,19 @@ void search(file_struct* file) {
                 search(file->files[i]);
 }
 
-void debug_print_files(file_struct* file, int depth) {
+void debug_print_files(file_struct* file, int depth, int last) {
     for (int i = 0; i < depth -1; i++)
-        printf("|");
-    if (depth > 0)
-        printf("`");
+        printf("|  ");
+    if (depth != 0){
+        if (last)
+            printf("`--");
+        else
+            printf("+--");
+    }
     printf("%s\n", file->name);
     for (int i = 0; i < file->num_files; i++)
-        debug_print_files(file->files[i], depth + 1);
+        debug_print_files(file->files[i], depth + 1,
+                          (i == file->num_files - 1)? 1 : 0);
 }
 
 void delete_files(file_struct* file) {

@@ -31,7 +31,7 @@ int main(int argc, char **argv) {
     }
 
     search(file_s);
-    debug_print_files(file_s, 0);
+    debug_print_files(file_s, 0, 0);
     delete_files(file_s);
     return 0;
 }

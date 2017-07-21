@@ -9,7 +9,7 @@
 
 void search(file_struct*);
 
-void debug_print_files(file_struct*, int);
+void debug_print_files(file_struct*, int, int);
 
 void delete_files(file_struct*);
 
