@@ -1,3 +1,6 @@
+/*
+ */
+#include <unistd.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <sys/stat.h>
@@ -6,7 +9,13 @@
 #include "open_directory.h"
 #include "file_search.h"
 
-int main(int argc, char const *argv[]) {
+int v;
+
+void file_getopt(int, char**);
+
+int main(int argc, char **argv) {
+    file_getopt(argc, argv);
+
     char* filename = malloc(sizeof(char) * 250);
     char* path = malloc(sizeof(char) * 250);
     printf("enter filename: ");
@@ -24,12 +33,23 @@ int main(int argc, char const *argv[]) {
     search(file_s);
     debug_print_files(file_s, 0);
     delete_files(file_s);
-
-    /*
-    debug_print_file_s(file_s);
-    open_dir(file_s);
-    fprintf(stderr, "reprinting debug file struct\n");
-    debug_print_file_s(file_s);
-    */
     return 0;
+}
+
+void file_getopt(int argc, char **argv) {
+    char c;
+
+    v = 0;
+
+    while ((c = getopt(argc, argv, "vh")) != -1) {
+        switch (c){
+            case 'v':
+                v++;
+                break;
+            case 'h':
+                exit(0);
+            default:
+                exit(1);
+        }
+    }
 }
