@@ -9,6 +9,7 @@
 
 typedef struct pre_string {
     char** str;
+    int depth;
     int len;
 } pre_string;
 

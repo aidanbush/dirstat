@@ -1,4 +1,5 @@
-/*
+/* Author: Aidan
+ * Date: July, 16, 17
  * File: File Search
  * Description: deals with recursivly searching through filesystem
  */
@@ -75,6 +76,23 @@ pre_string* create_pre_string(int len) {
     }
     str->len = len;
     return str;
+}
+
+int resize_pre_string(pre_string* str) {
+    //create new array
+    char** new_str = malloc(sizeof(char*) * str->len * 2);
+    if (new_str == NULL) {
+        fprintf(stderr, "new_str == NULL\n");
+        return 0;
+    }
+    //copy over
+    for (int i = 0; i < str->depth;i++)
+        new_str[i] = str->str[i];
+    //free old
+    free(str->str);
+    //replace
+    str->str = new_str;
+    return 1;
 }
 /*
 void generate_calculations() {
