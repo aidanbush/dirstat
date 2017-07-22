@@ -39,6 +39,9 @@ int main(int argc, char **argv) {
     free_pre_string(str);
 
     delete_files(file_s);
+
+    free(filename);
+    free(path);
     return 0;
 }
 

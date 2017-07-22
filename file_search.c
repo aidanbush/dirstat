@@ -5,6 +5,7 @@
  */
 
 #include <stdio.h>
+#include <stdlib.h>
 
 #include "file_info.h"
 #include "open_directory.h"
@@ -50,7 +51,9 @@ void delete_files(file_struct* file) {
     if (file->type == TYPE_DIR)
         for (int i = 0; i < file->num_files; i++)
             delete_files(file->files[i]);
-    free(file->files);
+
+    if (file->files != NULL)
+        free(file->files);
     free(file->name);
     free(file->path);
     free(file);

@@ -72,6 +72,8 @@ file_struct* get_file(char* filename, char* pathname) {
         return NULL;
     }
 
+    free(file_stat);
+
     file_info->num_files = 0;
     file_info->max_files = 0;
     file_info->files = NULL;
