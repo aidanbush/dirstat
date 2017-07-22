@@ -15,7 +15,7 @@ typedef struct pre_string {
 
 void search(file_struct*);
 
-void debug_print_files(file_struct*, int, pre_string*);
+void debug_print_files(file_struct*, pre_string*);
 
 void delete_files(file_struct*);
 

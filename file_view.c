@@ -31,15 +31,13 @@ int main(int argc, char **argv) {
         return 1;
     }
 
-    fprintf(stderr, "before create string\n");
     pre_string* str;
-    str = create_pre_string(10);
+    str = create_pre_string(5);
 
-    fprintf(stderr, "before search\n");
     search(file_s);
 
-    fprintf(stderr, "before print tree\n");
-    debug_print_files(file_s, 0, str);
+    debug_print_files(file_s, str);
+
     delete_files(file_s);
     return 0;
 }
