@@ -87,17 +87,18 @@ pre_string* create_pre_string(int len) {
 
 //rewrite causes memory errors
 int resize_pre_string(pre_string* str) {
+    int new_len = str->len * 2;
     //create new array
-    char** new_str = malloc(sizeof(char*) * str->len * 2);
+    char** new_str = malloc(sizeof(char*) * new_len);
     if (new_str == NULL) {
         fprintf(stderr, "new_str == NULL\n");
         return 0;
     }
     //copy over
-    for (int i = 0; i < str->depth;i++)
+    for (int i = 0; i < str->depth; i++)
         new_str[i] = str->str[i];
 
-    for (int i = str->depth; i < str->len * 2; i++){
+    for (int i = str->depth; i < new_len; i++){
         new_str[i] = malloc(sizeof(char) * 4);
         if (new_str[i] == NULL) {
             fprintf(stderr, "str->str[i] == NULL\n");
@@ -108,8 +109,8 @@ int resize_pre_string(pre_string* str) {
         }
     }
 
+    str->len = new_len;
     free(str->str);
-    str->len *= 2;
     str->str = new_str;
     return 1;
 }
