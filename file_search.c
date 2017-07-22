@@ -21,10 +21,8 @@ void search(file_struct* file) {
 }
 
 void debug_print_files(file_struct* file, pre_string* str) {
-    if (str->depth >= str->len) {
-        fprintf(stderr, "resize\n");
+    if (str->depth >= str->len)
         resize_pre_string(str);
-    }
 
     for (int i = 0; i < str->depth; i++)
         printf("%s", str->str[i]);
@@ -59,7 +57,7 @@ void delete_files(file_struct* file) {
 }
 
 pre_string* create_pre_string(int len) {
-    pre_string* str = malloc(sizeof(pre_string*));
+    pre_string* str = malloc(sizeof(pre_string));
     if (str == NULL) {      
         fprintf(stderr, "str == NULL\n");     
         return NULL;
@@ -73,7 +71,7 @@ pre_string* create_pre_string(int len) {
     }
 
     for (int i = 0; i < len; i++) { 
-        str->str[i] = malloc(sizeof(char) * 3);
+        str->str[i] = malloc(sizeof(char) * 4);
         if (str->str[i] == NULL) {
             for (int j = 0; j < i; j++)
                 free(str->str[i]);
@@ -87,8 +85,8 @@ pre_string* create_pre_string(int len) {
     return str;
 }
 
+//rewrite causes memory errors
 int resize_pre_string(pre_string* str) {
-    fprintf(stderr, "begin resize_pre_string\n");
     //create new array
     char** new_str = malloc(sizeof(char*) * str->len * 2);
     if (new_str == NULL) {
@@ -98,10 +96,9 @@ int resize_pre_string(pre_string* str) {
     //copy over
     for (int i = 0; i < str->depth;i++)
         new_str[i] = str->str[i];
-    //malloc next
-    fprintf(stderr, "before malloc next\n");
+
     for (int i = str->depth; i < str->len * 2; i++){
-        new_str[i] = malloc(sizeof(char*) * 3);
+        new_str[i] = malloc(sizeof(char) * 4);
         if (new_str[i] == NULL) {
             fprintf(stderr, "str->str[i] == NULL\n");
             for (int j = str->depth; j < i; j++)
@@ -111,11 +108,17 @@ int resize_pre_string(pre_string* str) {
         }
     }
 
-    fprintf(stderr, "free str->str\n");
-    str->len *= 2;
     free(str->str);
+    str->len *= 2;
     str->str = new_str;
     return 1;
+}
+
+void free_pre_string(pre_string* str) {
+    for (int i = 0; i < str->len; i++)
+        free(str->str[i]);
+    free(str->str);
+    free(str);
 }
 /*
 void generate_calculations() {

@@ -31,12 +31,12 @@ int main(int argc, char **argv) {
         return 1;
     }
 
-    pre_string* str;
-    str = create_pre_string(5);
-
     search(file_s);
 
+    pre_string* str;
+    str = create_pre_string(5);
     debug_print_files(file_s, str);
+    free_pre_string(str);
 
     delete_files(file_s);
     return 0;
