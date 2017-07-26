@@ -31,8 +31,13 @@ int main(int argc, char **argv) {
         return 1;
     }
 
+    //generate tree
     search(file_s);
 
+    //generate calulations
+    calculate_stats(file_s);
+
+    //print debug info
     pre_string* str;
     str = create_pre_string(5);
     debug_print_files(file_s, str);

@@ -35,12 +35,15 @@ file_struct* get_file(char* filename, char* pathname) {
         return NULL;
     }
 
-    stat_val = stat(pathname, file_stat);
+    stat_val = lstat(pathname, file_stat);
     
     if (stat_val != 0) {
         //print errno
         fprintf(stderr, "errno: %d\n", errno);
-        perror("stat error:");
+        perror("stat error");
+        fprintf(stderr, "pathname: %s\n", pathname);
+        //set type
+        //print file
         free(file_stat);
         free(file_info);
         return NULL;
@@ -58,6 +61,7 @@ file_struct* get_file(char* filename, char* pathname) {
     file_info->name = strdup(filename);
     if (file_info->name == NULL) {
         free(file_stat);
+        free(file_info->name);
         free(file_info);
         fprintf(stderr, "error in copying filename\n");
         return NULL;
@@ -66,18 +70,19 @@ file_struct* get_file(char* filename, char* pathname) {
     file_info->path = strdup(pathname);
     if (file_info->path == NULL) {
         free(file_stat);
+        free(file_info->name);
         free(file_info->path);
         free(file_info);
         fprintf(stderr, "error in copying pathname\n");
         return NULL;
     }
 
-    free(file_stat);
-
     file_info->num_files = 0;
     file_info->max_files = 0;
+    file_info->total_size = file_info->size;
     file_info->files = NULL;
-    //add file
+
+    free(file_stat);
     return file_info;
 }
 
@@ -87,10 +92,10 @@ int set_struct_file_type(file_struct* file_info, struct stat* file_stat) {
 
     if (S_ISREG(file_stat->st_mode)) {// reg file
         file_info->type = TYPE_FILE;
-    } else if (S_ISDIR(file_stat->st_mode)) {// directory
-        file_info->type = TYPE_DIR;
     } else if (S_ISLNK(file_stat->st_mode)) {// link
         file_info->type = TYPE_LINK;
+    } else if (S_ISDIR(file_stat->st_mode)) {// directory
+        file_info->type = TYPE_DIR;
     } else {// other
         file_info->type = TYPE_UNKNOWN;
     }
@@ -101,6 +106,8 @@ int set_struct_file_type(file_struct* file_info, struct stat* file_stat) {
 
 void debug_print_file_s(file_struct* file_s) {
     fprintf(stderr, "filename: %s\n", file_s->name);
+    fprintf(stderr, "pathname: %s\n", file_s->path);
+    fprintf(stderr, "file mode: %d\n", file_s->file_mode);
     fprintf(stderr, "type: ");
     switch (file_s->type) {
         case TYPE_FILE:
@@ -156,13 +163,13 @@ int resize_struct_files(file_struct* file) {
     //create new array
     file_struct** new_file_array = malloc(sizeof(file_struct*) * new_size);
 
-    if(new_file_array == NULL) {
+    if(new_file_array == NULL)
         return 0;
-    }
+
     //copy elements over
-    for(int i = 0; i < file->num_files; i++) {
+    for(int i = 0; i < file->num_files; i++)
         new_file_array[i] = file->files[i];
-    }
+
     //free old
     free(file->files);
     //set on struct

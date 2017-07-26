@@ -22,13 +22,14 @@ typedef enum {
 } file_type;
 
 typedef struct file_struct {
-    off_t size;
+    off_t size;// aka long int
+    off_t total_size;// size of the file and everything below it
     file_type type;
     int file_mode;
     char* name;
     char* path;
     int num_files;
-    int max_files;//the nume of allocated space in in the files array
+    int max_files;// size of files array
     struct file_struct** files;
 } file_struct;
 

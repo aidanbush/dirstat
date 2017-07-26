@@ -11,7 +11,6 @@
 #include "open_directory.h"
 #include "file_search.h"
 
-
 int resize_pre_string(pre_string*);
 
 void search(file_struct* file) {
@@ -35,7 +34,7 @@ void debug_print_files(file_struct* file, pre_string* str) {
             strcpy(str->str[str->depth -1], "|  ");
     }
 
-    printf("%s\n", file->name);
+    printf("%s;%ld;%ld\n", file->name, file->size, file->total_size);
     for (int i = 0; i < file->num_files; i++){
         if (i < file->num_files -1)
             strcpy(str->str[str->depth], "+--");
@@ -124,8 +123,12 @@ void free_pre_string(pre_string* str) {
     free(str->str);
     free(str);
 }
-/*
-void generate_calculations() {
+
+//TODO add calculating relative sizes
+void calculate_stats(file_struct* file) {
+    for (int i = 0; i < file->num_files; i++) {
+        calculate_stats(file->files[i]);
+        file->total_size += file->files[i]->total_size;
+    }
     return;
 }
-*/

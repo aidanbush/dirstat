@@ -23,4 +23,6 @@ pre_string* create_pre_string(int);
 
 void free_pre_string(pre_string*);
 
+void calculate_stats(file_struct*);
+
 #endif
