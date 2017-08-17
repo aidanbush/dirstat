@@ -37,6 +37,9 @@ int main(int argc, char **argv) {
     //generate calulations
     calculate_stats(file_s);
 
+    //sort tree
+    sort_files(file_s);
+
     //print debug info
     pre_string* str;
     str = create_pre_string(5);

@@ -132,3 +132,24 @@ void calculate_stats(file_struct* file) {
     }
     return;
 }
+
+int test_file_cmp(const void* file1, const void* file2) {
+    fprintf(stderr, "file1: %s;%ld\nfile2:%s;%ld\n",
+                 (*(file_struct**)file1)->name,
+                 (*(file_struct**)file1)->total_size,
+                 (*(file_struct**)file2)->name,
+                 (*(file_struct**)file2)->total_size);
+    return (int) (*(file_struct**)file2)->total_size -
+                 (*(file_struct**)file1)->total_size;
+}
+
+void sort_files(file_struct* file) {
+    fprintf(stderr, "sort files\n");
+    //sort current depth
+    qsort(file->files, file->num_files, sizeof(file_struct*), test_file_cmp);
+    //go though all childern and sort them
+    for(int i = 0; i < file->num_files; i++) {
+        if(file->files[i]->num_files > 0)
+            sort_files(file->files[i]);
+    }
+}

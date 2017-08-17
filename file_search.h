@@ -25,4 +25,6 @@ void free_pre_string(pre_string*);
 
 void calculate_stats(file_struct*);
 
+void sort_files(file_struct*);
+
 #endif
