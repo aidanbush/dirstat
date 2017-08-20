@@ -11,30 +11,70 @@
 
 int v;
 
-int file_getopt(int, char**);
 void create_tree(file_struct*);
 void print_usage(char*);
 
 int main(int argc, char **argv) {
-    int headless = file_getopt(argc, argv);
+    char* filename = NULL;
+    char* path = NULL;
 
-    char* filename = malloc(sizeof(char) * 250);
-    char* path = malloc(sizeof(char) * 250);
+    char c;
+    v = 0;
+    int headless = 0;
 
+    while ((c = getopt(argc, argv, "vhnf:p:")) != -1) {
+        switch (c){
+            case 'v':
+                v++;
+                break;
+            case 'h':
+                print_usage(argv[0]);
+                exit(0);
+            case 'n':
+                headless = 1;
+                break;
+            case 'f':
+                filename = optarg;
+                break;
+            case 'p':
+                path = optarg;
+                break;
+            default:
+                print_usage(argv[0]);
+                exit(1);
+        }
+    }
     /*
     if (!headless)
         ncureses_input(filename, path);
     */
 
-    printf("enter filename: ");
-    scanf("%s", filename);
-    printf("enter pathname: ");
-    scanf("%s", path);
+    //if filename or path are NULL use defaults
+    if (filename == NULL || path == NULL) {
+        if (filename != NULL)
+            free(filename);
+        else if (path != NULL)
+            free(path);
+
+        filename = malloc(sizeof(char) *2);
+        if (filename == NULL)
+            return 1;
+        strcpy(filename, "/");
+
+        path = malloc(sizeof(char) *2);
+        if (path == NULL) {
+            free(filename);
+            return 1;
+        }
+        strcpy(path, "/");
+    }
 
     file_struct* file_s = get_file(filename, path);
 
     if (file_s == NULL) {
         fprintf(stderr, "error in getting file info\n");
+        free(filename);
+        free(path);
         return 1;
     }
 
@@ -71,38 +111,10 @@ void print_usage(char* p_name) {
            "    -h\tdisplays this help message and exits\n"
            "    -v\tdisplays extra ( verbose ) debbugging information\n"
            "      \t(multiple -v options increase verbosity)\n"
-           "    -n\tused to disable ncurses view\n", p_name);
-}
-
-int file_getopt(int argc, char **argv) {
-    char c;
-
-    v = 0;
-    int headless = 0;
-
-    while ((c = getopt(argc, argv, "vhnf:p:")) != -1) {
-        switch (c){
-            case 'v':
-                v++;
-                break;
-            case 'h':
-                print_usage(argv[0]);
-                exit(0);
-            case 'n':
-                headless = 1;
-                break;
-            case 'f':
-                fprintf(stderr, "f option not yet implemented\narg: %s\n",
-                        optarg);
-                break;
-            case 'p':
-                fprintf(stderr, "p option not yet implemented\narg: %s\n",
-                        optarg);
-                break;
-            default:
-                print_usage(argv[0]);
-                exit(1);
-        }
-    }
-    return headless;
+           "    -n\tused to disable ncurses view\n"
+           "    starting file options ( must use both or ignored )\n"
+           "    -f\tfilename option must include a filename argument\n"
+           "    -p\tpath options must include a path argument\n"
+           "      \tthe path must include the filename and not end with a \'\\\'\n"
+            , p_name);
 }
