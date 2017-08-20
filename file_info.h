@@ -29,8 +29,12 @@ typedef struct file_struct {
     char* name;
     char* path;
     int num_files;
+    int total_num_files;//TODO implement
     int max_files;// size of files array
     struct file_struct** files;
+    struct file_struct* parent;//TODO test
+    int min;//TODO implement // if minimized for view
+    int depth;//TODO implement // the depth from starting dir
 } file_struct;
 
 //functions

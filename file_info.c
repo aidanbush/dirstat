@@ -78,9 +78,12 @@ file_struct* get_file(char* filename, char* pathname) {
     }
 
     file_info->num_files = 0;
+    file_info->total_num_files = 0;
     file_info->max_files = 0;
     file_info->total_size = file_info->size;
     file_info->files = NULL;
+    file_info->parent = NULL;
+    file_info->min = 0;
 
     free(file_stat);
     return file_info;
@@ -148,6 +151,7 @@ void add_file_list(file_struct* file, char* new_filename, char* new_pathname) {
     }
     file->files[file->num_files] = new_file;//add struct
     file->num_files += 1;//update num_files
+    file->total_num_files = file->num_files;
     //debug_print_file_s(new_file);
     return;//return
 }
