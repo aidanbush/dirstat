@@ -1,0 +1,8 @@
+This file may become out of date easily:
+
+replace calls to unsafe library functions with the safe ones
+fix different ways of looking at files in directory and testing if the file is a directory
+clean up header files removing unnecessary functions and adding comments
+change defaults to current directory
+strip off extra trailing / from starting filename and path
+add ignored filenames file
