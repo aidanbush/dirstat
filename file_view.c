@@ -9,6 +9,9 @@
 #include "open_directory.h"
 #include "file_search.h"
 
+/* ncurses includes */
+#include "file_ncurses.h"
+
 int v;
 
 void create_tree(file_struct*);
@@ -44,10 +47,8 @@ int main(int argc, char **argv) {
                 exit(1);
         }
     }
-    /*
     if (!headless)
-        ncureses_input(filename, path);
-    */
+        init_ncurses();
 
     //if filename or path are NULL use defaults
     if (filename == NULL || path == NULL) {
@@ -69,6 +70,7 @@ int main(int argc, char **argv) {
         strcpy(path, "/");
     }
 
+    // start generating file tree
     file_struct* file_s = get_file(filename, path);
 
     if (file_s == NULL) {
@@ -81,15 +83,24 @@ int main(int argc, char **argv) {
     create_tree(file_s);
 
     //print debug info
-    pre_string* str;
-    str = create_pre_string(5);
-    debug_print_files(file_s, str);
-    free_pre_string(str);
+    if (v >= 1) {
+        pre_string* str;
+        str = create_pre_string(5);
+        debug_print_files(file_s, str);
+        free_pre_string(str);
+    }
+
+    if (!headless)
+        display_view();
 
     delete_files(file_s);
 
     free(filename);
     free(path);
+    
+    if (!headless)
+        exit_ncurses();
+
     return 0;
 }
 
