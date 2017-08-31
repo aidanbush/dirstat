@@ -6,3 +6,4 @@ clean up header files removing unnecessary functions and adding comments
 change defaults to current directory
 strip off extra trailing / from starting filename and path
 add ignored filenames file
+remove magic numbers
