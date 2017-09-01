@@ -8,9 +8,11 @@
 
 #include <ncurses.h>
 
+#include "file_info.h"
+
 void init_ncurses();
 
-void display_view();
+void display_view(file_struct *start);
 
 void exit_ncurses();
 

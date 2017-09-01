@@ -15,6 +15,8 @@
 
 #include "file_info.h"
 
+extern int v;
+
 //prototypes
 int set_struct_file_type();
 int resize_struct_files();
@@ -83,7 +85,7 @@ file_struct* get_file(char* filename, char* pathname) {
     file_info->total_size = file_info->size;
     file_info->files = NULL;
     file_info->parent = NULL;
-    file_info->min = 0;
+    file_info->min = true;
 
     free(file_stat);
     return file_info;

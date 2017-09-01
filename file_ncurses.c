@@ -22,6 +22,14 @@
 
 #define POST_LEN 7
 
+
+typedef struct print_array {
+    int num;
+    int size;
+    file_struct **f_arr;
+} print_array;
+
+
 char* convert_file_size(off_t size) {
     static char *postfix[] = {"B", "KB", "MB", "GB", "TB", "PB", "EB"};
     int i = 0;
@@ -68,7 +76,7 @@ void destroy_top_view(WINDOW* top_v) {
     delwin(top_v);
 }
 
-char *get_main_line() {
+char *get_main_line(file_struct *printing) {
     static char *str_arr[] = {
 "dir1                                    1024      2048      DIR       1",
 " file1                                  1024      1024      FILE      0",
@@ -95,25 +103,136 @@ char *get_main_line() {
     char *new_str = malloc(sizeof(char) * 80);
 
     new_str = strcpy(new_str, str_arr[i]);
-    //sprintf(str, "%s", str_arr[i]);
 
     i = (i + 1) % 20;
 
     return new_str;
 }
 
-WINDOW* create_main_view() { 
-    WINDOW *main_v;
+
+void add_p_array(print_array* array, file_struct *cur) {
+    if (array->num >= array->size)
+        return;
+    array->f_arr[array->num] = cur;
+    array->num++;
+}
+
+file_struct *get_next_above(file_struct *cur) {
+    file_struct *next = cur->parent;
+    if (next == NULL)
+        return NULL;
+
+    int i = 0;
+
+    while (next->files[i] != cur && i < next->num_files)
+        i++;
+
+    //get files after cur
+    i++;
+    if (i >= next->num_files)
+        return get_next_above(next);
+    return next->files[i];
+}
+
+void get_print_array(file_struct *start, print_array *array) {
+    file_struct *cur = start;
+    add_p_array(array, cur);
+    bool done = false;
+    file_struct *next = NULL;
+
+    while(array->num <= array->size && done != true) {
+        next = NULL;
+        if (cur->min != true)
+            // incase of error with the tree
+            for (int i = 0; i < cur->num_files; i++)
+                if (cur->files[i] != NULL) {
+                    next = cur->files[i];
+                    break;
+                }
+
+        if (next == NULL) // no children
+            next = get_next_above(cur);
+
+        if (next == NULL){
+            done = true;
+            continue;
+        }
+        add_p_array(array, next);
+        cur = next;
+    }
+}
+
+/*
+file_struct *next_print_file(file_struct *last_print) {
+    //check for children
+    if (last_print->min == false && last_print->num_files > 0)
+        for (int i = 0; i < last_print->num_files; i++)
+            return last_print->files[i];
+
+    //check for siblings
+    file_struct *parent = last_print->parent;
+    if (parent != NULL)
+        if (parent->num_files > 0) {
+            int i = 0;
+            // find last_print
+            while (i < parent->num_files && parent->files[i] != last_print)
+                i++;
+            // increment to next files after last_print
+            i++;
+            // if the sibling exists
+            if (i < parent->num_files)
+                return parent->files[i];
+        }
+
+    //go to parents
+}
+*/
+
+void print_files_w(print_array *array, WINDOW *main_v) {
+    //
     char *line_str = NULL;
+    int i = 0;
+    while (i < array->num) {
+        //create string
+        line_str = calloc(80, sizeof(char));
+        sprintf(line_str, "%s", array->f_arr[i]->name);
+        mvwprintw(main_v, i, 0, "%s", line_str);
+        free(line_str);
+        i++;
+    }
+}
+
+WINDOW* create_main_view(file_struct *start) { 
+    WINDOW *main_v;
+    //char *line_str = NULL;
+    //file_struct *cur_print = start;
+
+    //get array for print
+    print_array *p_arr = malloc(sizeof(print_array));
+    p_arr->size = MAIN_START;
+    p_arr->num = 0;
+    file_struct **arr_files = malloc(sizeof(file_struct*) * p_arr->size);
+    p_arr->f_arr = arr_files;
+
+    get_print_array(start, p_arr);
 
     //create window between the top and bottom views
     main_v = newwin(MAIN_HEIGHT, COLS, MAIN_START, 0);
 
+    //fprintf(stderr, "printing arr\n");
+    print_files_w(p_arr, main_v);
+
+    /*
     for (int i =0; i < MAIN_HEIGHT; i++) {
-        line_str = get_main_line();
+        line_str = get_main_line(cur_print);
         mvwprintw(main_v, i, 0, "%s", line_str);
         free(line_str);
+        cur_print = next_print_file(cur_print);
     }
+    */
+
+    free(p_arr->f_arr);
+    free(p_arr);
 
     wrefresh(main_v);
     return main_v;
@@ -150,17 +269,17 @@ void destroy_det_view(WINDOW* det_v) {
     delwin(det_v);
 }
 
-void display_view() { 
+void display_view(file_struct *start) { 
     WINDOW *top_v, *main_v, *detail_v;
     int c;
     bool exit = false;
-    int pos = 0;
+    //int pos = 0;
     //display top view
     top_v = create_top_view();
     //display bottom view
     detail_v = create_detail_view();
     //display main view
-    main_v = create_main_view();
+    main_v = create_main_view(start);
 
     //get input
     while(exit == false) { 
@@ -171,12 +290,16 @@ void display_view() {
                 continue;
                 break;
             case KEY_UP:
-                // move up check if space if not dont move
-                pos = (pos - 1) % (MAIN_HEIGHT);
+                //move_up();
                 break;
             case KEY_DOWN:
-                //move down check if space if not dont move
-                pos = (pos + 1) % (MAIN_HEIGHT);
+                //move_down();
+                break;
+            case KEY_RIGHT:
+                //move_in();
+                break;
+            case KEY_LEFT:
+                //move_out();
                 break;
         }
         //update top

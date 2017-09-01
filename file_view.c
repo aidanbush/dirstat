@@ -91,7 +91,7 @@ int main(int argc, char **argv) {
     }
 
     if (!headless)
-        display_view();
+        display_view(file_s);
 
     delete_files(file_s);
 

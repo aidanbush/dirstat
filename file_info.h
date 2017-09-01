@@ -9,6 +9,7 @@
 
 #include <stdlib.h>
 #include <string.h>
+#include <stdbool.h>
 
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -33,7 +34,7 @@ typedef struct file_struct {
     int max_files;// size of files array
     struct file_struct** files;
     struct file_struct* parent;//TODO test
-    int min;//TODO implement // if minimized for view
+    bool min;//TODO implement // if minimized for view
     int depth;//TODO implement // the depth from starting dir
 } file_struct;
 
