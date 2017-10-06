@@ -47,8 +47,6 @@ int main(int argc, char **argv) {
                 exit(1);
         }
     }
-    if (!headless)
-        init_ncurses();
 
     //if filename or path are NULL use defaults
     if (filename == NULL || path == NULL) {
@@ -89,6 +87,9 @@ int main(int argc, char **argv) {
         debug_print_files(file_s, str);
         free_pre_string(str);
     }
+
+    if (!headless)
+        init_ncurses();
 
     if (!headless)
         display_view(file_s);

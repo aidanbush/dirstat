@@ -25,11 +25,13 @@ int open_dir(file_struct* file){
     }
 
     while((file_dirent = readdir(dir_struct)) != NULL){
-        //if in list of ignored files
-        if (ignored_filename(file_dirent->d_name))
-            continue;
         //create proper filename
         filename = create_filename(file->path, file_dirent->d_name);
+        //if in list of ignored files
+        if (ignored_filename(file_dirent->d_name, filename)) {
+            free(filename);
+            continue;
+        }
         //add filename to file struct
         add_file_list(file, file_dirent->d_name, filename);
         free(filename);
@@ -61,8 +63,11 @@ char* create_filename(char* name_start, char* name_end) {
     return filename;
 }
 
-int ignored_filename(char* filename) {
-    if(strcmp(filename, ".") == 0 || strcmp(filename, "..") == 0)
+// needs to be reimplemented way to inefficient
+int ignored_filename(char *filename, char *absolute_path) {
+    if (strcmp(filename, ".") == 0 || strcmp(filename, "..") == 0)
+        return 1;
+    if (strcmp(absolute_path, "//proc") == 0)
         return 1;
     return 0;
 }

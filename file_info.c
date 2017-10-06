@@ -85,7 +85,7 @@ file_struct* get_file(char* filename, char* pathname) {
     file_info->total_size = file_info->size;
     file_info->files = NULL;
     file_info->parent = NULL;
-    file_info->min = true;
+    file_info->min = false;//true;
 
     free(file_stat);
     return file_info;
@@ -182,4 +182,62 @@ int resize_struct_files(file_struct* file) {
     file->files = new_file_array;
     file->max_files = new_size;
     return 1;
+}
+
+
+/* getter functions */
+
+char* get_file_name(file_struct *file) {
+    return file->name;
+}
+
+char* get_file_path(file_struct *file) {
+    return file->path;
+}
+
+off_t get_file_size(file_struct *file) {
+    return file->size;
+}
+
+off_t get_file_t_size(file_struct *file) {
+    return file->total_size;
+}
+
+int get_file_num_files(file_struct *file) {
+    return file->num_files;
+}
+
+int get_file_total_num_files(file_struct *file) {
+    return file->total_num_files;
+}
+
+bool get_file_min(file_struct *file) {
+    return file->min;
+}
+
+int get_file_depth(file_struct *file) {
+    return file->depth;
+}
+
+char *get_file_type(file_struct *file) {
+    static char *types[] = {"TYPE_FILE", "TYPE_LINK", "TYPE_DIR", "TYPE_UNKOWN",
+                           "ERROR"};
+
+    switch(file->type) {
+        case TYPE_FILE:
+            return types[0];
+            break;
+        case TYPE_LINK:
+            return types[1];
+            break;
+        case TYPE_DIR:
+            return types[2];
+            break;
+        case TYPE_UNKNOWN:
+            return types[3];
+            break;
+        default:
+            return types[4];
+            break;
+    }
 }

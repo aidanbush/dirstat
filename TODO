@@ -7,3 +7,8 @@ change defaults to current directory
 strip off extra trailing / from starting filename and path
 add ignored filenames file
 remove magic numbers
+
+directories du sets to size 0
+/sys/
+/proc/
+

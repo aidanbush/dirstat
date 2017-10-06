@@ -45,12 +45,14 @@ char* convert_file_size(off_t size) {
     return new_size;
 }
 
+
 void init_ncurses() {
     initscr();
     raw();
     keypad(stdscr, TRUE);
     refresh();
 }
+
 
 WINDOW* create_top_view() {
     WINDOW* top;
@@ -72,50 +74,20 @@ WINDOW* create_top_view() {
     return top;
 }
 
+
 void destroy_top_view(WINDOW* top_v) {
     delwin(top_v);
 }
 
-char *get_main_line(file_struct *printing) {
-    static char *str_arr[] = {
-"dir1                                    1024      2048      DIR       1",
-" file1                                  1024      1024      FILE      0",
-"dir2                                    1024      55607     DIR       4",
-" file2                                  7685      7685      FILE      1",
-" dir3                                   1024      46898     DIR       1",
-"  file3                                 45874     45874     FILE      1",
-"file4                                   485       485       FILE      1",
-"file5                                   5682      5682      DIR       1",
-"dir3                                    1024      16810     DIR       3",
-" file6                                  2546      2546      FILE      1",
-" file7                                  13240     13240     FILE      1",
-"dir4                                    1024      125888    DIR       8",
-" dir5                                   1024      116952    DIR       5",
-"  dir6                                  1024      51404     DIR       3",
-"   file8                                45856     45856     FILE      1",
-"   file9                                4524      4524      FILE      1",
-"  file10                                64524     64524     FILE      1",
-" file11                                 4658      4658      FILE      1",
-" file12                                 3254      3254      FILE      1",
-"file13                                  580       580       FILE      1",
-};
-    static int i = 0;
-    char *new_str = malloc(sizeof(char) * 80);
-
-    new_str = strcpy(new_str, str_arr[i]);
-
-    i = (i + 1) % 20;
-
-    return new_str;
-}
-
 
 void add_p_array(print_array* array, file_struct *cur) {
-    if (array->num >= array->size)
+    if (array->num >= array->size || cur == NULL)
         return;
     array->f_arr[array->num] = cur;
     array->num++;
+    //fprintf(stderr, "add array f:%s\n", cur->name);
 }
+
 
 file_struct *get_next_above(file_struct *cur) {
     file_struct *next = cur->parent;
@@ -134,14 +106,16 @@ file_struct *get_next_above(file_struct *cur) {
     return next->files[i];
 }
 
+
 void get_print_array(file_struct *start, print_array *array) {
     file_struct *cur = start;
     add_p_array(array, cur);
     bool done = false;
     file_struct *next = NULL;
 
-    while(array->num <= array->size && done != true) {
+    while(array->num < array->size && done != true) {
         next = NULL;
+        // check children
         if (cur->min != true)
             // incase of error with the tree
             for (int i = 0; i < cur->num_files; i++)
@@ -162,34 +136,9 @@ void get_print_array(file_struct *start, print_array *array) {
     }
 }
 
-/*
-file_struct *next_print_file(file_struct *last_print) {
-    //check for children
-    if (last_print->min == false && last_print->num_files > 0)
-        for (int i = 0; i < last_print->num_files; i++)
-            return last_print->files[i];
 
-    //check for siblings
-    file_struct *parent = last_print->parent;
-    if (parent != NULL)
-        if (parent->num_files > 0) {
-            int i = 0;
-            // find last_print
-            while (i < parent->num_files && parent->files[i] != last_print)
-                i++;
-            // increment to next files after last_print
-            i++;
-            // if the sibling exists
-            if (i < parent->num_files)
-                return parent->files[i];
-        }
-
-    //go to parents
-}
-*/
-
+// prints array of files
 void print_files_w(print_array *array, WINDOW *main_v) {
-    //
     char *line_str = NULL;
     int i = 0;
     while (i < array->num) {
@@ -202,14 +151,13 @@ void print_files_w(print_array *array, WINDOW *main_v) {
     }
 }
 
+
 WINDOW* create_main_view(file_struct *start) { 
     WINDOW *main_v;
-    //char *line_str = NULL;
-    //file_struct *cur_print = start;
 
     //get array for print
     print_array *p_arr = malloc(sizeof(print_array));
-    p_arr->size = MAIN_START;
+    p_arr->size = MAIN_HEIGHT;
     p_arr->num = 0;
     file_struct **arr_files = malloc(sizeof(file_struct*) * p_arr->size);
     p_arr->f_arr = arr_files;
@@ -219,17 +167,7 @@ WINDOW* create_main_view(file_struct *start) {
     //create window between the top and bottom views
     main_v = newwin(MAIN_HEIGHT, COLS, MAIN_START, 0);
 
-    //fprintf(stderr, "printing arr\n");
     print_files_w(p_arr, main_v);
-
-    /*
-    for (int i =0; i < MAIN_HEIGHT; i++) {
-        line_str = get_main_line(cur_print);
-        mvwprintw(main_v, i, 0, "%s", line_str);
-        free(line_str);
-        cur_print = next_print_file(cur_print);
-    }
-    */
 
     free(p_arr->f_arr);
     free(p_arr);
@@ -238,11 +176,13 @@ WINDOW* create_main_view(file_struct *start) {
     return main_v;
 }
 
+
 void destory_main_view(WINDOW* main_v) { 
     delwin(main_v);
 }
 
-WINDOW* create_detail_view() { 
+
+WINDOW* create_detail_view(file_struct *cur) { 
     WINDOW* det;
 
     //create window along bottom
@@ -252,22 +192,24 @@ WINDOW* create_detail_view() {
     whline(det, '-', COLS);
 
     //add info
-    mvwprintw(det, 1, 0, "name:");
-    mvwprintw(det, 2, 0, "path:");
+    mvwprintw(det, 1, 0, "name: %s", get_file_name(cur));
+    mvwprintw(det, 1, 40, "size: %ld", get_file_size(cur));
+    mvwprintw(det, 2, 0, "path: %s", get_file_path(cur));
     //last line
-    mvwprintw(det, 1, 40, "size:");
-    mvwprintw(det, 3, 0, "t. size:");
-    mvwprintw(det, 3, 20, "files:");
-    mvwprintw(det, 3, 40, "t. files:");
+    mvwprintw(det, 3, 0, "t. size: %ld", get_file_t_size(cur));
+    mvwprintw(det, 3, 20, "files: %d", cur->num_files);
+    mvwprintw(det, 3, 40, "t. files: %d", cur->total_num_files);
     mvwprintw(det, 3, 60, "type:");
 
     wrefresh(det);
     return det;
 }
 
+
 void destroy_det_view(WINDOW* det_v) { 
     delwin(det_v);
 }
+
 
 void display_view(file_struct *start) { 
     WINDOW *top_v, *main_v, *detail_v;
@@ -277,7 +219,7 @@ void display_view(file_struct *start) {
     //display top view
     top_v = create_top_view();
     //display bottom view
-    detail_v = create_detail_view();
+    detail_v = create_detail_view(start);
     //display main view
     main_v = create_main_view(start);
 
@@ -310,6 +252,7 @@ void display_view(file_struct *start) {
     destory_main_view(main_v);
     destroy_det_view(detail_v);
 } 
+
 
 void exit_ncurses() { 
     endwin();

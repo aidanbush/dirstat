@@ -43,4 +43,4 @@ file_struct* get_file(char*, char*);
 void debug_print_file_s(file_struct*);
 void add_file_list(file_struct*, char*, char*);
 
-#endif
+#endif // FILE_INFO_H
