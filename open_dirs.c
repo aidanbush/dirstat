@@ -18,11 +18,11 @@
 #define FULL_PATH   "%s/%s"
 
 static char *create_full_path(char *path, char *name) {
-    int size = snprintf(NULL, 0, FULL_PATH, path, name);
+    int size = snprintf(NULL, 0, FULL_PATH, path, name) + 1;
     if (size >= PATH_MAX)
         return NULL;
 
-    char *full_path = calloc(size + 1, sizeof(char));
+    char *full_path = calloc(size, sizeof(char));
     if (full_path == NULL)
         return NULL;
 
@@ -63,8 +63,10 @@ int open_dir(file_s *file) {
             continue;
         }
 
-        //add to list
+        add_file(file, filename);
+        free(filename);
     }
 
+    closedir(dir);
     return 1;
 }
