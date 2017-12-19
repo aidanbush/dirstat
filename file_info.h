@@ -34,4 +34,7 @@ file_s *get_info(char *pathname);
 /* prints the given file_s struct */
 void print_file_s(file_s *file);
 
+/* adds a file given a pathname */
+int add_file(file_s *parent, char *pathname);
+
 #endif /* FILE_INFO_H */

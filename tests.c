@@ -13,13 +13,20 @@
 int test_file_info() {
     int fails = 0;
 
-    file_s *file = get_info(".");//test on current directory
+    //test single file
+    file_s *file = get_info(".");
     if (file == NULL) {
         fprintf(stderr, "failed to open file\n");
         fails++;
-    } else {
-        free_file_s(file);
     }
+
+    //test adding a file
+    if (add_file(file, ".") == 0) {
+        fprintf(stderr, "failed to add file\n");
+        fails++;
+    }
+
+    free_file_s(file);
 
     return fails;
 }

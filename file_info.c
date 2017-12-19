@@ -102,6 +102,39 @@ file_s *get_info(char *pathname) {
 void print_file_s(file_s *file) {
     printf("filename: %s\n"
         "pathname: %s\n"
-        "size: %lu\n",
+        "size: %ld\n",
         file->name, file->path, file->size);
+}
+
+static int resize_file_list(file_s *file) {
+    int new_size = (file->max_files + 1) *2;
+
+    file_s **tmp = realloc(file->files, new_size * sizeof(file_s *));
+    if (tmp == NULL)
+        return 0;
+
+    file->files = tmp;
+
+    file->max_files = new_size;
+    return 1;
+}
+
+int add_file(file_s *parent, char *pathname) {
+    if (parent == NULL)
+        return 0;
+
+    file_s *child = get_info(pathname);
+    if (child == NULL)
+        return 0;
+
+    if (parent->max_files <= parent->num_files) {
+        if (resize_file_list(parent) == 0) {
+            free_file_s(child);
+            return 0;
+        }
+    }
+
+    parent->files[parent->num_files] = child;
+    parent->num_files++;
+    return 1;
 }
