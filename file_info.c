@@ -16,6 +16,7 @@
 /* project includes */
 #include "file_info.h"
 
+/* frees the file_s struct */
 void free_file_s(file_s *file) {
     if (file == NULL)
         return;
@@ -33,6 +34,19 @@ void free_file_s(file_s *file) {
     free(file);
 }
 
+static void add_file_type(file_s *file, struct stat file_stat) {
+    if (S_ISREG(file_stat.st_mode)) {
+        file->type = TYPE_REG;
+    } else if (S_ISLNK(file_stat.st_mode)) {
+        file->type = TYPE_LINK;
+    } else if (S_ISDIR(file_stat.st_mode)) {
+        file->type = TYPE_DIR;
+    } else {
+        file->type = TYPE_UNKNOWN;
+    }
+}
+
+/* creates a file_s struct for the given pathname */
 file_s *get_info(char *pathname) {
     struct stat file_stat;
     file_s *file = NULL;
@@ -44,7 +58,6 @@ file_s *get_info(char *pathname) {
         return NULL;
     }
 
-    //create file struct file
     file = malloc(sizeof(file_s));
     if (file == NULL) {
         return NULL;
@@ -62,10 +75,12 @@ file_s *get_info(char *pathname) {
         return NULL;
     }
 
+    add_file_type(file, file_stat);
     file->size = file_stat.st_size;
     return file;
 }
 
+/* prints a file_s struct */
 void print_file_s(file_s *file) {
     printf("filename: %s\n"
         "pathname: %s\n"
@@ -75,7 +90,6 @@ void print_file_s(file_s *file) {
 
 #ifdef _TEST_FILE_INFO
 int main(int argc, char *argv[]) {
-    //call test
     file_s *file = get_info(argv[0]);
     if (file == NULL) {
         fprintf(stderr, "file == NULL\n");
@@ -86,5 +100,4 @@ int main(int argc, char *argv[]) {
 
     return 0;
 }
-
 #endif /* TEST_FILE_INFO */
