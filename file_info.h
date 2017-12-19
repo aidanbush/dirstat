@@ -20,6 +20,9 @@ typedef struct file_s {
     char *name;
     char *path;
     file_type type;
+    int num_files;
+    int max_files;
+    struct file_s **files;
 } file_s;
 
 /* frees the given file_s struct */

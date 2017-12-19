@@ -31,6 +31,11 @@ void free_file_s(file_s *file) {
         file->path = NULL;
     }
 
+    //free children
+    for (int i = 0; i < file->num_files; i++)
+        free_file_s(file->files[i]);
+    free(file->files);
+
     free(file);
 }
 
@@ -44,6 +49,13 @@ static void add_file_type(file_s *file, struct stat file_stat) {
     } else {
         file->type = TYPE_UNKNOWN;
     }
+}
+
+static int set_files(file_s *file) {
+    file->num_files = 0;
+    file->max_files = 0;
+    file->files = NULL;
+    return 1;
 }
 
 /* creates a file_s struct for the given pathname */
@@ -74,6 +86,12 @@ file_s *get_info(char *pathname) {
         free_file_s(file);
         return NULL;
     }
+
+    if (set_files(file) == 0) {
+        free_file_s(file);
+        return NULL;
+    }
+
 
     add_file_type(file, file_stat);
     file->size = file_stat.st_size;
