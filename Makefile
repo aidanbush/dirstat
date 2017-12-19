@@ -11,5 +11,8 @@ CFLAGS=-Wall -Werror -D_POSIX_C_SOURCE=200809L -g
 
 file_info.o: file_info.c file_info.h
 
+tests: tests.c file_info.o
+
+
 clean:
-	$(RM) *.o
+	$(RM) tests *.o

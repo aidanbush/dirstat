@@ -87,17 +87,3 @@ void print_file_s(file_s *file) {
         "size: %lu\n",
         file->name, file->path, file->size);
 }
-
-#ifdef _TEST_FILE_INFO
-int main(int argc, char *argv[]) {
-    file_s *file = get_info(argv[0]);
-    if (file == NULL) {
-        fprintf(stderr, "file == NULL\n");
-    } else {
-        print_file_s(file);
-        free_file_s(file);
-    }
-
-    return 0;
-}
-#endif /* TEST_FILE_INFO */
