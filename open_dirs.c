@@ -1,7 +1,8 @@
-/* Author:
- * Date:
- * File:
- * Description:
+/* Author: Aidan
+ * Date: Dec. 19, 17
+ * File: open_dirs.c
+ * Description: file for opening the directoy of a given file_s struct and
+ *  adding all its files.
  */
 
 /* stardard library includes*/
