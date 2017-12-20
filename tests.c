@@ -1,7 +1,7 @@
-/* Author:
- * Date:
- * File:
- * Description:
+/* Author: Aidan
+ * Date: Dec. 19, 17
+ * File: tests.c
+ * Description: testing file for dirstat project
  */
 
 /* stardard library includes*/
@@ -10,6 +10,7 @@
 /* project includes */
 #include "file_info.h"
 #include "open_dirs.h"
+#include "search.h"
 
 int test_file_info() {
     int fails = 0;
@@ -43,6 +44,28 @@ int test_open_dirs() {
         fails++;
     }
 
+    //test if . is in there
+
+    free_file_s(file);
+
+    return fails;
+}
+
+int test_search() {
+    int fails = 0;
+
+    file_s *file = search(".");
+    if (file == NULL) {
+        fails++;
+    }
+
+    if (file->num_files == 0) {
+        fprintf(stderr, "failed to search multiple files\n");
+        fails++;
+    }
+
+    printf("total files: %d\n", file->num_files);
+
     free_file_s(file);
 
     return fails;
@@ -52,11 +75,12 @@ int main(int argc, char const *argv[]) {
     int t_fails = 0;
     t_fails += test_file_info();
     t_fails += test_open_dirs();
+    t_fails += test_search();
 
-    if (t_fails > 0) {
+    if (t_fails > 0)
         printf("Total test fails: %d\n", t_fails);
-    } else {
+    else
         printf("All tests PASSED!\n");
-    }
+
     return 0;
 }

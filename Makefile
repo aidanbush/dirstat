@@ -13,8 +13,9 @@ file_info.o: file_info.c file_info.h
 
 open_dirs.o: open_dirs.c open_dirs.h file_info.h
 
-tests: tests.c file_info.o open_dirs.o
+search.o: search.c search.h open_dirs.h file_info.h
 
+tests: tests.c file_info.o open_dirs.o search.o
 
 clean:
 	$(RM) tests *.o
