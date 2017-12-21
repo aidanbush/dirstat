@@ -118,6 +118,18 @@ int test_search() {
         fails++;
     }
 
+    sort_files(file);
+
+    if (file != NULL && file->num_files >= 2) {
+        if (file->files[0]->total_size < file->files[1]->total_size) {
+            fprintf(stderr, "failed to sort file properly\n");
+            fails++;
+        }
+    } else {
+        fprintf(stderr, "not enough files to test if sort worked properly\n");
+        fails++;
+    }
+
     free_file_s(file);
 
     return fails;

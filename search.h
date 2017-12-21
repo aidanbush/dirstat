@@ -14,4 +14,6 @@ void print_files(file_s *file);
 
 void calculate_file_stats(file_s *file);
 
+void sort_files(file_s *file);
+
 #endif /* SEARCH_H */

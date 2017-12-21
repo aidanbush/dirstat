@@ -112,3 +112,18 @@ void calculate_file_stats(file_s *file) {
         file->total_num_files += file->files[i]->total_num_files;
     }
 }
+
+static int file_s_cmp(const void *file_1, const void *file_2) {
+    return (*(file_s**)file_2)->total_size - (*(file_s**)file_1)->total_size;
+}
+
+void sort_files(file_s *file) {
+    if (file == NULL)
+        return;
+
+    qsort(file->files, file->num_files, sizeof(file_s*), file_s_cmp);
+
+    for (int i = 0; i < file->num_files; i++)
+        if (file->files[i]->num_files > 0)
+            sort_files(file->files[i]);
+}
