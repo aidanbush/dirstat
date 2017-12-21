@@ -17,12 +17,14 @@ typedef enum {
 
 typedef struct file_s {
     off_t size;
+    off_t total_size;
     char *name;
     char *path;
     file_type type;
     int num_files;
     int max_files;
     struct file_s **files;
+    struct file_s *parent;
 } file_s;
 
 /* frees the given file_s struct */

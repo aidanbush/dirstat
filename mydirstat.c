@@ -40,7 +40,10 @@ int main(int argc, char *argv[]) {
         }
     }
 
+    printf("starting at: %s\n", start);
+
     file_s * file = search(start);
+    print_files(file);
     free_file_s(file);
 
     return 0;

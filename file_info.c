@@ -4,7 +4,7 @@
  * Description: main file for getting the info of a file
  */
 
-/* stardard library includes*/
+/* stardard library includes */
 #include <string.h>
 #include <libgen.h>
 #include <stdio.h>
@@ -95,6 +95,7 @@ file_s *get_info(char *pathname) {
 
     add_file_type(file, file_stat);
     file->size = file_stat.st_size;
+    file->parent = NULL;
     return file;
 }
 
@@ -106,6 +107,7 @@ void print_file_s(file_s *file) {
         file->name, file->path, file->size);
 }
 
+/* resized the file list in the file_s */
 static int resize_file_list(file_s *file) {
     int new_size = (file->max_files + 1) *2;
 
@@ -119,6 +121,7 @@ static int resize_file_list(file_s *file) {
     return 1;
 }
 
+/* adds a file as a child to the given parent */
 int add_file(file_s *parent, char *pathname) {
     if (parent == NULL)
         return 0;
@@ -133,6 +136,8 @@ int add_file(file_s *parent, char *pathname) {
             return 0;
         }
     }
+
+    child->parent = parent;
 
     parent->files[parent->num_files] = child;
     parent->num_files++;

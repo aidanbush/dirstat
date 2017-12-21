@@ -6,6 +6,8 @@
 
 /* stardard library includes*/
 #include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
 
 /* project includes */
 #include "search.h"
@@ -30,4 +32,76 @@ file_s *search(char *start_filename) {
     search_r(file);
 
     return file;
+}
+
+static void print_file_search(file_s *file, char *pre_string, int strlen) {
+    for (int i = 0; i < strlen; i++) {
+        printf("%c", pre_string[i]);
+    }
+    printf("%s\n", file->name);
+}
+
+static int resize_pre_string(int *len, char **pre_string) {
+    *len *= 2;
+    char *tmp = realloc(*pre_string, sizeof(char) * (*len * 3));
+    if (tmp == NULL) {
+        free(pre_string);
+        *pre_string = NULL;
+        return 0;
+    }
+    *pre_string = tmp;
+    return 1;
+}
+
+static void set_prev_pre_string(int depth, char *pre_string) {
+    if (strncmp("`--", pre_string + (depth - 1) * 3, 3) == 0)
+        strncpy(pre_string + (depth - 1) * 3, "   ", 3);
+    else
+        strncpy(pre_string + (depth - 1) * 3, "|  ", 3);
+}
+
+static void set_next_pre_string(int last, int depth, char *pre_string) {
+    if (last) {
+        strncpy(pre_string + depth * 3, "`--", 3);
+    } else {
+        strncpy(pre_string + depth * 3, "+--", 3);
+    }
+}
+
+void print_files(file_s *file) {
+    static int depth = 0, len = 1;
+    static char *pre_string = NULL;
+    if (depth == -1) {
+        free(pre_string);
+        return;
+    }
+
+    if (pre_string == NULL) {
+        pre_string = malloc(sizeof(char) * (len * 3));
+        if (pre_string == NULL) {
+            depth = -1;
+            return;
+        }
+    }
+
+    //resize
+    if (depth >= len)
+        if (resize_pre_string(&len, &pre_string) == 0)
+            depth = -1;
+
+    print_file_search(file, pre_string, depth * 3);
+
+    if (depth > 0)
+        set_prev_pre_string(depth, pre_string);
+
+    for (int i = 0; i < file->num_files; i++) {
+        set_next_pre_string(i == file->num_files - 1, depth, pre_string);
+        depth++;
+        print_files(file->files[i]);
+    }
+    depth--;
+
+    if (depth == -1) {
+        free(pre_string);
+    }
 }
