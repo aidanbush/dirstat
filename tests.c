@@ -104,8 +104,6 @@ int test_search() {
         fails++;
     }
 
-    calculate_file_stats(file);
-
     printf("total files: %d\n", file->total_num_files);
 
     if (file == NULL || file->num_files >= file->total_num_files) {
@@ -117,8 +115,6 @@ int test_search() {
         fprintf(stderr, "size >= total_size\n");
         fails++;
     }
-
-    sort_files(file);
 
     if (file != NULL && file->num_files >= 2) {
         if (file->files[0]->total_size < file->files[1]->total_size) {

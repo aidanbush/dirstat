@@ -14,26 +14,6 @@
 #include "open_dirs.h"
 #include "file_info.h"
 
-static void search_r(file_s *file) {
-    if (file->type == TYPE_DIR)
-        if (open_dir(file))
-            for (int i = 0; i < file->num_files; i++)
-                search_r(file->files[i]);
-}
-
-file_s *search(char *start_filename) {
-    if (start_filename == NULL)
-        return NULL;
-
-    file_s *file = get_info(start_filename);
-    if (file == NULL)
-        return NULL;
-
-    search_r(file);
-
-    return file;
-}
-
 static void print_file_search(file_s *file, char *pre_string, int strlen) {
     for (int i = 0; i < strlen; i++)
         printf("%c", pre_string[i]);
@@ -104,7 +84,14 @@ void print_files(file_s *file) {
         free(pre_string);
 }
 
-void calculate_file_stats(file_s *file) {
+static void search_r(file_s *file) {
+    if (file->type == TYPE_DIR)
+        if (open_dir(file))
+            for (int i = 0; i < file->num_files; i++)
+                search_r(file->files[i]);
+}
+
+static void calculate_file_stats(file_s *file) {
     for (int i = 0; i < file->num_files; i++) {
         calculate_file_stats(file->files[i]);
 
@@ -117,7 +104,7 @@ static int file_s_cmp(const void *file_1, const void *file_2) {
     return (*(file_s**)file_2)->total_size - (*(file_s**)file_1)->total_size;
 }
 
-void sort_files(file_s *file) {
+static void sort_files(file_s *file) {
     if (file == NULL)
         return;
 
@@ -126,4 +113,20 @@ void sort_files(file_s *file) {
     for (int i = 0; i < file->num_files; i++)
         if (file->files[i]->num_files > 0)
             sort_files(file->files[i]);
+}
+
+file_s *search(char *start_filename) {
+    if (start_filename == NULL)
+        return NULL;
+
+    file_s *file = get_info(start_filename);
+    if (file == NULL)
+        return NULL;
+
+    search_r(file);
+
+    calculate_file_stats(file);
+    sort_files(file);
+
+    return file;
 }
