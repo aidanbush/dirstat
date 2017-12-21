@@ -109,5 +109,6 @@ void calculate_file_stats(file_s *file) {
         calculate_file_stats(file->files[i]);
 
         file->total_size += file->files[i]->total_size;
+        file->total_num_files += file->files[i]->total_num_files;
     }
 }

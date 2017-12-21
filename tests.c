@@ -32,6 +32,11 @@ int test_file_info() {
         fails++;
     }
 
+    if (file == NULL || file->total_num_files != 0) {
+        fprintf(stderr, "failed to set total_num_files\n");
+        fails++;
+    }
+
     if (file == NULL || file->size == 0) {
         fprintf(stderr, "failed to set size\n");
         fails++;
@@ -45,6 +50,21 @@ int test_file_info() {
     //test adding a file
     if (add_file(file, ".") == 0) {
         fprintf(stderr, "failed to add file\n");
+        fails++;
+    }
+
+    if (file == NULL || file->num_files != 1) {
+        fprintf(stderr, "failed to set num_files after adding a file\n");
+        fails++;
+    }
+
+    if (file == NULL || file->total_num_files != 1) {
+        fprintf(stderr, "failed to set total_num_files after adding a file\n");
+        fails++;
+    }
+
+    if (file == NULL || file->num_files != file->total_num_files) {
+        fprintf(stderr, "num_files != total_num_files\n");
         fails++;
     }
 
@@ -79,14 +99,24 @@ int test_search() {
         fails++;
     }
 
-    if (file->num_files == 0) {
+    if (file == NULL || file->num_files == 0) {
         fprintf(stderr, "failed to search multiple files\n");
         fails++;
     }
 
-    printf("total files: %d\n", file->num_files);
-
     calculate_file_stats(file);
+
+    printf("total files: %d\n", file->total_num_files);
+
+    if (file == NULL || file->num_files >= file->total_num_files) {
+        fprintf(stderr, "num_files >= total_num_files\n");
+        fails++;
+    }
+
+    if (file == NULL || file->size >= file->total_size) {
+        fprintf(stderr, "size >= total_size\n");
+        fails++;
+    }
 
     free_file_s(file);
 

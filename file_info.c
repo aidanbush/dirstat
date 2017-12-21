@@ -54,6 +54,7 @@ static void add_file_type(file_s *file, struct stat file_stat) {
 static void set_files(file_s *file) {
     file->num_files = 0;
     file->max_files = 0;
+    file->total_num_files = 0;
     file->files = NULL;
 }
 
@@ -137,5 +138,6 @@ int add_file(file_s *parent, char *pathname) {
 
     parent->files[parent->num_files] = child;
     parent->num_files++;
+    parent->total_num_files++;
     return 1;
 }
