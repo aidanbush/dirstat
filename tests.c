@@ -22,6 +22,26 @@ int test_file_info() {
         fails++;
     }
 
+    if (file == NULL || file->parent != NULL) {
+        fprintf(stderr, "failed to set parent to NULL\n");
+        fails++;
+    }
+
+    if (file == NULL || file->num_files != 0) {
+        fprintf(stderr, "failed to set num_files\n");
+        fails++;
+    }
+
+    if (file == NULL || file->size == 0) {
+        fprintf(stderr, "failed to set size\n");
+        fails++;
+    }
+
+    if (file == NULL || file->size != file->total_size) {
+        fprintf(stderr, "failed to set total_size\n");
+        fails++;
+    }
+
     //test adding a file
     if (add_file(file, ".") == 0) {
         fprintf(stderr, "failed to add file\n");
@@ -65,6 +85,8 @@ int test_search() {
     }
 
     printf("total files: %d\n", file->num_files);
+
+    calculate_file_stats(file);
 
     free_file_s(file);
 
