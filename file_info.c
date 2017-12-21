@@ -51,11 +51,10 @@ static void add_file_type(file_s *file, struct stat file_stat) {
     }
 }
 
-static int set_files(file_s *file) {
+static void set_files(file_s *file) {
     file->num_files = 0;
     file->max_files = 0;
     file->files = NULL;
-    return 1;
 }
 
 /* creates a file_s struct for the given pathname */
@@ -70,7 +69,7 @@ file_s *get_info(char *pathname) {
         return NULL;
     }
 
-    file = malloc(sizeof(file_s));
+    file = calloc(1, sizeof(file_s));
     if (file == NULL) {
         return NULL;
     }
@@ -87,14 +86,11 @@ file_s *get_info(char *pathname) {
         return NULL;
     }
 
-    if (set_files(file) == 0) {
-        free_file_s(file);
-        return NULL;
-    }
-
-
+    set_files(file);
     add_file_type(file, file_stat);
+
     file->size = file_stat.st_size;
+    file->total_size = file->size;
     file->parent = NULL;
     return file;
 }

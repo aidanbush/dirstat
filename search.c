@@ -35,9 +35,9 @@ file_s *search(char *start_filename) {
 }
 
 static void print_file_search(file_s *file, char *pre_string, int strlen) {
-    for (int i = 0; i < strlen; i++) {
+    for (int i = 0; i < strlen; i++)
         printf("%c", pre_string[i]);
-    }
+
     printf("%s\n", file->name);
 }
 
@@ -61,11 +61,10 @@ static void set_prev_pre_string(int depth, char *pre_string) {
 }
 
 static void set_next_pre_string(int last, int depth, char *pre_string) {
-    if (last) {
+    if (last)
         strncpy(pre_string + depth * 3, "`--", 3);
-    } else {
+    else
         strncpy(pre_string + depth * 3, "+--", 3);
-    }
 }
 
 void print_files(file_s *file) {
@@ -84,7 +83,6 @@ void print_files(file_s *file) {
         }
     }
 
-    //resize
     if (depth >= len)
         if (resize_pre_string(&len, &pre_string) == 0)
             depth = -1;
@@ -99,9 +97,17 @@ void print_files(file_s *file) {
         depth++;
         print_files(file->files[i]);
     }
+
     depth--;
 
-    if (depth == -1) {
+    if (depth == -1)
         free(pre_string);
+}
+
+void calculate_file_stats(file_s *file) {
+    for (int i = 0; i < file->num_files; i++) {
+        calculate_file_stats(file->files[i]);
+
+        file->total_size += file->files[i]->total_size;
     }
 }

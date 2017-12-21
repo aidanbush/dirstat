@@ -23,6 +23,7 @@ typedef struct file_s {
     file_type type;
     int num_files;
     int max_files;
+    int total_num_files;
     struct file_s **files;
     struct file_s *parent;
 } file_s;
