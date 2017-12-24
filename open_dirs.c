@@ -1,11 +1,11 @@
 /* Author: Aidan
- * Date: Dec. 19, 17
+ * Date: Dec. 18, 17
  * File: open_dirs.c
- * Description: file for opening the directoy of a given file_s struct and
+ * Description: file for opening the directory of a given file_s struct and
  *  adding all its files.
  */
 
-/* stardard library includes*/
+/* standard library includes*/
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
@@ -18,6 +18,7 @@
 
 #define FULL_PATH   "%s/%s"
 
+/* creates full pathname by concatenating the path, and file name */
 static char *create_full_path(char *path, char *name) {
     int size = snprintf(NULL, 0, FULL_PATH, path, name) + 1;
     if (size >= PATH_MAX)
@@ -32,6 +33,7 @@ static char *create_full_path(char *path, char *name) {
     return full_path;
 }
 
+/* given a file and path name returns 1 if they are to be ignored */
 static int ignore_file(char *name, char *path) {
     if (name == NULL || path == NULL)
         return 1;
@@ -43,6 +45,7 @@ static int ignore_file(char *name, char *path) {
     return 0;
 }
 
+/* opens the directory of the given file struct, and adds all files within it */
 int open_dir(file_s *file) {
     if (file->type != TYPE_DIR)
         return 0;

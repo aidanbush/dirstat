@@ -4,7 +4,7 @@
  * Description: main file for dirstat tool
  */
 
-/* stardard library includes*/
+/* standard library includes*/
 #include <unistd.h>
 #include <libgen.h>
 #include <stdio.h>
@@ -14,6 +14,7 @@
 #include "file_info.h"
 #include "search.h"
 
+/* prints the usage message for the given program name */
 void print_usage(char *progname) {
     printf("Usage : %s [ options ]\n"
         "A simple dirstat tool.\n"

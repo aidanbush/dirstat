@@ -14,13 +14,15 @@
 #include "open_dirs.h"
 #include "file_info.h"
 
+/* prints a files with the given prestring first */
 static void print_file_search(file_s *file, char *pre_string, int strlen) {
     for (int i = 0; i < strlen; i++)
         printf("%c", pre_string[i]);
 
-    printf("%s\n", file->name);
+    printf("%s:%ld:%ld\n", file->name, file->total_size, file->size);
 }
 
+/* resizes the prestring */
 static int resize_pre_string(int *len, char **pre_string) {
     *len *= 2;
     char *tmp = realloc(*pre_string, sizeof(char) * (*len * 3));
@@ -33,6 +35,7 @@ static int resize_pre_string(int *len, char **pre_string) {
     return 1;
 }
 
+/* sets the string for the previous element in the prestring */
 static void set_prev_pre_string(int depth, char *pre_string) {
     if (strncmp("`--", pre_string + (depth - 1) * 3, 3) == 0)
         strncpy(pre_string + (depth - 1) * 3, "   ", 3);
@@ -40,6 +43,7 @@ static void set_prev_pre_string(int depth, char *pre_string) {
         strncpy(pre_string + (depth - 1) * 3, "|  ", 3);
 }
 
+/* sets the new element in the pre string */
 static void set_next_pre_string(int last, int depth, char *pre_string) {
     if (last)
         strncpy(pre_string + depth * 3, "`--", 3);
@@ -47,6 +51,7 @@ static void set_next_pre_string(int last, int depth, char *pre_string) {
         strncpy(pre_string + depth * 3, "+--", 3);
 }
 
+/* prints the given file and all files below it */
 void print_files(file_s *file) {
     static int depth = 0, len = 1;
     static char *pre_string = NULL;
@@ -84,6 +89,7 @@ void print_files(file_s *file) {
         free(pre_string);
 }
 
+/* recursive search for files to create the tree */
 static void search_r(file_s *file) {
     if (file->type == TYPE_DIR)
         if (open_dir(file))
@@ -91,6 +97,7 @@ static void search_r(file_s *file) {
                 search_r(file->files[i]);
 }
 
+/* calculates stats for the given file struct tree */
 static void calculate_file_stats(file_s *file) {
     for (int i = 0; i < file->num_files; i++) {
         calculate_file_stats(file->files[i]);
@@ -100,10 +107,12 @@ static void calculate_file_stats(file_s *file) {
     }
 }
 
+/* compare for sorting files */
 static int file_s_cmp(const void *file_1, const void *file_2) {
     return (*(file_s**)file_2)->total_size - (*(file_s**)file_1)->total_size;
 }
 
+/* sort file function recursively sorts the entire tree */
 static void sort_files(file_s *file) {
     if (file == NULL)
         return;
@@ -115,6 +124,7 @@ static void sort_files(file_s *file) {
             sort_files(file->files[i]);
 }
 
+/* searches recursively through the filesystem to create a file structure tree */
 file_s *search(char *start_filename) {
     if (start_filename == NULL)
         return NULL;
