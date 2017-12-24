@@ -27,7 +27,7 @@ static int resize_pre_string(int *len, char **pre_string) {
     *len *= 2;
     char *tmp = realloc(*pre_string, sizeof(char) * (*len * 3));
     if (tmp == NULL) {
-        free(pre_string);
+        free(*pre_string);
         *pre_string = NULL;
         return 0;
     }
