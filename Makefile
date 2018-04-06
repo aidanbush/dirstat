@@ -5,7 +5,7 @@
 SHELL=/bin/bash
 
 CC=gcc
-CFLAGS=-Wall -Werror -D_POSIX_C_SOURCE=200809L -g
+CFLAGS=-Wall -Werror -Wextra -D_POSIX_C_SOURCE=200809L -g -pedantic
 
 .PHONY: all clean
 
