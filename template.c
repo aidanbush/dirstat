@@ -4,6 +4,6 @@
  * Description:
  */
 
-/* stardard library includes*/
+/* standard library includes*/
 
 /* project includes */

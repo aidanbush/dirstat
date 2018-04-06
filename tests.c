@@ -131,7 +131,7 @@ int test_search() {
     return fails;
 }
 
-int main(int argc, char const *argv[]) {
+int main() {
     int t_fails = 0;
     t_fails += test_file_info();
     t_fails += test_open_dirs();
